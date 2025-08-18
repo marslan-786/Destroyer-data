@@ -45,8 +45,8 @@ async def show_options(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if query:
         await query.answer()
         keyboard = InlineKeyboardMarkup([
-            [InlineKeyboardButton("✅ API 1 (Single Record)", callback_data="check_sim_api1")],
-            [InlineKeyboardButton("✅ API 2 (Multiple Records)", callback_data="check_sim_api2")]
+            [InlineKeyboardButton("✅ API 1", callback_data="check_sim_api1")],
+            [InlineKeyboardButton("✅ API 2", callback_data="check_sim_api2")]
         ])
         await query.message.edit_reply_markup(reply_markup=keyboard)
         await context.bot.send_message(
@@ -87,6 +87,7 @@ async def handle_number(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     api_url = ""
+    # Define the API URLs
     if selected_api == "check_sim_api1":
         api_url = f"https://api.impossible-world.xyz/api/data?phone={phone}"
     elif selected_api == "check_sim_api2":
@@ -102,14 +103,20 @@ async def handle_number(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 raw_data = await resp.text()
                 if resp.status == 200:
                     try:
-                        records = json.loads(raw_data)
+                        data = json.loads(raw_data)
                         
-                        # API 1 returns a single JSON object, API 2 returns a list
-                        # Convert single object to a list for consistent handling
-                        if isinstance(records, dict):
-                            records = [records]
-                        
-                        if isinstance(records, list) and len(records) > 0:
+                        records = []
+                        if selected_api == "check_sim_api1":
+                            # API 1 now returns a dict with a "records" key
+                            if isinstance(data, dict) and "records" in data:
+                                records = data["records"]
+                            else:
+                                records = [data] if isinstance(data, dict) else []
+                        elif selected_api == "check_sim_api2":
+                            # API 2 returns a list directly
+                            records = data if isinstance(data, list) else [data]
+
+                        if records and len(records) > 0:
                             text_blocks = []
                             for record in records:
                                 name = escape_markdown(record.get("Name", "Not Available"), version=2)
@@ -127,7 +134,7 @@ async def handle_number(update: Update, context: ContextTypes.DEFAULT_TYPE):
                                 )
                                 text_blocks.append(block)
 
-                            final_text = "*𝙆𝘼𝙈𝙄 𝙭 𝙉𝙊𝙏𝙃𝙄𝙉𝙂 𝘿𝙖𝙩𝙖𝙗𝙖𝙨𝙚*\n\n" + "\n".join(text_blocks)
+                            final_text = "👿👿👿👿\n\n" + "\n".join(text_blocks)
                             
                             keyboard = InlineKeyboardMarkup([
                                 [InlineKeyboardButton("🔎 Check Another Number Detail", callback_data="show_options")]
