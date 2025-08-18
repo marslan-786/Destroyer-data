@@ -45,8 +45,8 @@ async def show_options(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if query:
         await query.answer()
         keyboard = InlineKeyboardMarkup([
-            [InlineKeyboardButton("✅ API 1 ", callback_data="check_sim_api1")],
-            [InlineKeyboardButton("✅ API 2 ", callback_data="check_sim_api2")]
+            [InlineKeyboardButton("✅ API 1 (Single Record)", callback_data="check_sim_api1")],
+            [InlineKeyboardButton("✅ API 2 (Multiple Records)", callback_data="check_sim_api2")]
         ])
         await query.message.edit_reply_markup(reply_markup=keyboard)
         await context.bot.send_message(
@@ -104,6 +104,8 @@ async def handle_number(update: Update, context: ContextTypes.DEFAULT_TYPE):
                     try:
                         records = json.loads(raw_data)
                         
+                        # API 1 returns a single JSON object, API 2 returns a list
+                        # Convert single object to a list for consistent handling
                         if isinstance(records, dict):
                             records = [records]
                         
