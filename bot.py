@@ -28,7 +28,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 caption="🔍 SIM Detail Bot\n\nThis bot helps you retrieve SIM owner information using a secure API.\n\nOnly for personal and research use.",
                 reply_markup=keyboard
             )
-    except (FileNotFoundError, IOError) as e:
+    except (FileNotFoundsError, IOError) as e:
         logging.error(f"❌ Error loading logo.png: {e}")
         await update.message.reply_text(
             text="🔍 SIM Detail Bot\n\nThis bot helps you retrieve SIM owner information using a secure API.\n\nOnly for personal and research use.",
@@ -99,6 +99,7 @@ async def handle_number(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     try:
         async with aiohttp.ClientSession() as session:
+            await update.message.reply_text("🔎 Fetching data... Please wait.")
             async with session.get(api_url) as resp:
                 raw_data = await resp.text()
                 if resp.status == 200:
@@ -175,3 +176,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
