@@ -12,28 +12,87 @@ logging.basicConfig(level=logging.INFO)
 # Replace with your actual bot token
 BOT_TOKEN = "8470784613:AAEfoqhoaLc3Ix78g59EXLFWDJ-PiN82gBQ"
 
+# 👇 نئے تبدیلیاں یہاں شروع ہوتی ہیں 👇
+# Channels to force subscription. Replace with your actual channel usernames.
+CHANNELS_TO_JOIN = ["@kami_broken5", "@only_possible_worlds] 
+# 👆 اپنے چینلز کے usernames یہاں لکھیں، جیسے "@MyOfficialChannel"
+
 # Start command
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """
-    Handles the /start command. It now shows the button to choose the API.
+    Handles the /start command. It now shows the channels to join.
     """
     keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton("🔎 Check SIM Detail", callback_data="show_options")]
+        [InlineKeyboardButton("Kami_Broken 🚀", url=f"https://t.me/{CHANNELS_TO_JOIN[0][1:]}")],
+        [InlineKeyboardButton("Impossible - World 🌎", url=f"https://t.me/{CHANNELS_TO_JOIN[1][1:]}")],
+        [InlineKeyboardButton("✅ I have joined", callback_data="check_membership")]
     ])
+    
+    caption_text = (
+        "🔍 SIM Detail Bot\n\n"
+        "This bot helps you retrieve SIM owner information using a secure API.\n\n"
+        "**‼️ Please join our channels to use the bot. 👇**"
+    )
     
     try:
         with open("logo.png", "rb") as img:
             await update.message.reply_photo(
                 photo=img,
-                caption="🔍 SIM Detail Bot\n\nThis bot helps you retrieve SIM owner information using a secure API.\n\nOnly for personal and research use.",
-                reply_markup=keyboard
+                caption=caption_text,
+                reply_markup=keyboard,
+                parse_mode="Markdown"
             )
-    except (FileNotFoundsError, IOError) as e:
+    except (FileNotFoundError, IOError) as e:
         logging.error(f"❌ Error loading logo.png: {e}")
         await update.message.reply_text(
-            text="🔍 SIM Detail Bot\n\nThis bot helps you retrieve SIM owner information using a secure API.\n\nOnly for personal and research use.",
+            text=caption_text,
+            reply_markup=keyboard,
+            parse_mode="Markdown"
+        )
+
+async def check_membership(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    """
+    Handles the 'I have joined' button and checks user's membership.
+    """
+    query = update.callback_query
+    await query.answer()
+
+    user_id = query.from_user.id
+    all_joined = True
+
+    for channel in CHANNELS_TO_JOIN:
+        try:
+            member = await context.bot.get_chat_member(chat_id=channel, user_id=user_id)
+            if member.status not in ["member", "administrator", "creator"]:
+                all_joined = False
+                break
+        except Exception as e:
+            logging.error(f"Error checking membership for {channel}: {e}")
+            all_joined = False
+            break
+
+    if all_joined:
+        # If joined, show the original menu
+        keyboard = InlineKeyboardMarkup([
+            [InlineKeyboardButton("🔎 Check SIM Detail", callback_data="show_options")]
+        ])
+        await query.message.reply_text(
+            text="✅ Thank you for joining! You can now use the bot.",
             reply_markup=keyboard
         )
+    else:
+        # If not joined, prompt again
+        keyboard = InlineKeyboardMarkup([
+            [InlineKeyboardButton("Channel 1 🚀", url=f"https://t.me/{CHANNELS_TO_JOIN[0][1:]}")],
+            [InlineKeyboardButton("Channel 2 💬", url=f"https://t.me/{CHANNELS_TO_JOIN[1][1:]}")],
+            [InlineKeyboardButton("✅ I have joined", callback_data="check_membership")]
+        ])
+        await query.message.reply_text(
+            text="❌ You must join both channels to use this bot. Please join and try again.",
+            reply_markup=keyboard
+        )
+
+# 👇 باقی کوڈ وہی ہے جس میں کوئی تبدیلی نہیں ہے 👇
 
 # Callback to show API options
 async def show_options(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -167,6 +226,9 @@ def main():
 
     # Handlers for commands and messages
     app.add_handler(CommandHandler("start", start))
+    # 👇 نیا handler شامل کریں
+    app.add_handler(CallbackQueryHandler(check_membership, pattern="^check_membership$"))
+    # 👇 باقی handlers وہی ہیں
     app.add_handler(CallbackQueryHandler(show_options, pattern="^show_options$"))
     app.add_handler(CallbackQueryHandler(handle_api_selection, pattern="^check_sim_api(1|2)$"))
     app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle_number))
@@ -176,4 +238,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
