@@ -14,7 +14,7 @@ BOT_TOKEN = "8470784613:AAEfoqhoaLc3Ix78g59EXLFWDJ-PiN82gBQ"
 
 # 👇 نئے تبدیلیاں یہاں شروع ہوتی ہیں 👇
 # Channels to force subscription. Replace with your actual channel usernames.
-CHANNELS_TO_JOIN = ["@kami_broken5", "@only_possible_worlds"]
+CHANNELS_TO_JOIN = ["@kami_broken5", "@only_possible_worlds", "@ik804EmanOfficial"]
 
 # 👆 اپنے چینلز کے usernames یہاں لکھیں، جیسے "@MyOfficialChannel"
 
@@ -26,6 +26,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = InlineKeyboardMarkup([
         [InlineKeyboardButton("Kami_Broken 🚀", url=f"https://t.me/{CHANNELS_TO_JOIN[0][1:]}")],
         [InlineKeyboardButton("Impossible - World 🌎", url=f"https://t.me/{CHANNELS_TO_JOIN[1][1:]}")],
+        [InlineKeyboardButton("Queen 👑", url=f"https://t.me/{CHANNELS_TO_JOIN[2][1:]}")],
         [InlineKeyboardButton("✅ I have joined", callback_data="check_membership")]
     ])
     
