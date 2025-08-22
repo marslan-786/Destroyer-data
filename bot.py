@@ -14,7 +14,7 @@ BOT_TOKEN = "8470784613:AAEfoqhoaLc3Ix78g59EXLFWDJ-PiN82gBQ"
 
 # 👇 نئے تبدیلیاں یہاں شروع ہوتی ہیں 👇
 # Channels to force subscription. Replace with your actual channel usernames.
-CHANNELS_TO_JOIN = ["@kami_broken5", "@only_possible_worlds", "@ik804EmanOfficial"]
+CHANNELS_TO_JOIN = ["@kami_broken5", "@only_possible_worlds", "@EmanPTI"]
 
 # 👆 اپنے چینلز کے usernames یہاں لکھیں، جیسے "@MyOfficialChannel"
 
