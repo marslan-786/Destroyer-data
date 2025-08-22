@@ -85,8 +85,9 @@ async def check_membership(update: Update, context: ContextTypes.DEFAULT_TYPE):
     else:
         # If not joined, prompt again
         keyboard = InlineKeyboardMarkup([
-            [InlineKeyboardButton("Channel 1 🚀", url=f"https://t.me/{CHANNELS_TO_JOIN[0][1:]}")],
-            [InlineKeyboardButton("Channel 2 💬", url=f"https://t.me/{CHANNELS_TO_JOIN[1][1:]}")],
+            [InlineKeyboardButton("Kami_Broken 🚀", url=f"https://t.me/{CHANNELS_TO_JOIN[0][1:]}")],
+            [InlineKeyboardButton("Impossible 👿", url=f"https://t.me/{CHANNELS_TO_JOIN[1][1:]}")],
+            [InlineKeyboardButton("Queen 👑 ", url=f"https://t.me/{CHANNELS_TO_JOIN[2][1:]}")],
             [InlineKeyboardButton("✅ I have joined", callback_data="check_membership")]
         ])
         await query.message.reply_text(
